@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Collections;
 
 namespace MasterRoster.BusinessLayer
 {
@@ -23,6 +24,7 @@ namespace MasterRoster.BusinessLayer
             DateTime startingMonday;
             DateTime endingMonday;
             Utilities.GetCurrentWeek(DateTime.Today, out startingMonday, out endingMonday);
+
             var bookings = _db.Bookings.Where(b => b.start_date > startingMonday && b.end_date < endingMonday).ToList();
 
             foreach (var booking in bookings)
@@ -42,6 +44,26 @@ namespace MasterRoster.BusinessLayer
             
 
             return bookingList;
+        }
+
+        internal void InsertBookingToDatabase(BookingViewModels.BookingAdd form)
+        {
+            throw new NotImplementedException();
+        }
+
+        public  List<BookingType> GetAllBookingTypes()
+        {
+            return _db.BookingTypes.ToList();
+        }
+
+        public Employee GetEmployeeByNumber(string employeeNum)
+        {
+            Employee employee = null;
+            if(!string.IsNullOrEmpty(employeeNum))
+            {
+                employee = _db.Employees.Where(e => e.employee_num == employeeNum).SingleOrDefault();
+            }
+            return employee;
         }
 
         public List<DayOfWeek> GetDaysForDateRange(DateTime startDate, DateTime endDate)

@@ -16,12 +16,10 @@ namespace MasterRoster.Controllers
             return View(top100Employees);
         }
 
-        //
-        // GET: /Employees/Details/5
-
-        public ActionResult Details(int id)
+        public ActionResult Details(string employeeNum)
         {
-            return View();
+            var employee = _manager.GetEmployeeByNumber(employeeNum);
+            return View(employee);
         }
 
         //

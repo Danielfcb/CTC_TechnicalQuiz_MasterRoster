@@ -1,0 +1,78 @@
+﻿@model MasterRoster.DataAccessLayer.Employee
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Employee</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.employee_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.employee_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.employee_num)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.employee_num)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.name)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.name)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.status)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.status)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.seniority_date)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.seniority_date)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.roletype_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.roletype_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.department_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.department_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.crew_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.crew_id)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.supervisor_id)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.supervisor_id)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

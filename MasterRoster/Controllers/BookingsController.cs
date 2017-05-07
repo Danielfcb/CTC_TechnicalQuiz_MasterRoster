@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using static MasterRoster.Models.BookingViewModels;
 
 namespace MasterRoster.Controllers
 {
@@ -30,19 +31,31 @@ namespace MasterRoster.Controllers
 
         public ActionResult Create()
         {
-            return View();
+            var allEmployees = _manager.GetAllEmployees();
+            var allBookingTypes = _manager.GetAllBookingTypes();
+
+            var bookingAddForm = new BookingAddForm()
+            {
+                BookingTypes = new SelectList(allBookingTypes , "booking_type_code", "booking_type_name"),
+                Employees = new SelectList(allEmployees, "employee_num", "name")
+            };
+
+            return View(bookingAddForm);
         }
 
         //
         // POST: /Bookings/Create
 
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public ActionResult Create(BookingAdd form)
         {
             try
             {
                 // TODO: Add insert logic here
-
+                if(form != null)
+                {
+                    _manager.InsertBookingToDatabase(form);
+                }
                 return RedirectToAction("Index");
             }
             catch
