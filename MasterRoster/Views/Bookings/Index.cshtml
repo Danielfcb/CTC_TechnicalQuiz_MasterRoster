@@ -1,0 +1,144 @@
+﻿@model IEnumerable<MasterRoster.Models.BookingForm_vm>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    List<DayOfWeek> daysOfWeek = new List<DayOfWeek>();
+    daysOfWeek.Add(DayOfWeek.Monday);
+    daysOfWeek.Add(DayOfWeek.Tuesday);
+    daysOfWeek.Add(DayOfWeek.Wednesday);
+    daysOfWeek.Add(DayOfWeek.Thursday);
+    daysOfWeek.Add(DayOfWeek.Friday);
+    daysOfWeek.Add(DayOfWeek.Saturday);
+    daysOfWeek.Add(DayOfWeek.Sunday);
+
+    List<String> crewCodes = new List<string>();
+    crewCodes.Add("DAY");
+    crewCodes.Add("AFT");
+    crewCodes.Add("EVN");
+
+    List<string> roleTypes = new List<string>();
+    roleTypes.Add("Manager");
+    roleTypes.Add("Supervisor");
+    roleTypes.Add("Worker");
+}
+
+<h2>Bookings</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+
+<table class="table table-bordered table-hover">
+    <thead>
+        <tr>
+            <th></th>
+            <th class="col-sm-3">Day Shift</th>
+            <th class="col-sm-3">Afternoon Shift</th>
+            <th class="col-sm-3">Evening Shift</th>
+        </tr>
+    </thead>
+
+
+
+    @foreach  (var day in daysOfWeek)
+    {
+        <thead>
+            <tr>
+                <td>@day.ToString()</td>
+            @foreach (var crew in crewCodes)
+            {
+
+                <td>
+                    <div>
+                        <table class="table">
+                                
+                            @foreach (var role in roleTypes)
+                            {
+                                <tr>
+                                <td width="100%" style="background-color:lightgray"><u>@string.Concat(role,"s") (@Model.Where(e => e.RoleType == role && e.CrewCode == crew && e.WeekDays.Contains(day)).Count())</u></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @foreach (var employee in Model)
+                                        {
+                                            if (employee.WeekDays.Contains(day) && employee.RoleType == role && employee.CrewCode == crew)
+                                            {
+
+                                                <a href="~/Employees/Details/@employee.EmployeeNumber"> @employee.EmployeeName</a> <br />
+
+                                            }
+                                        }
+                                    </td>
+
+                                </tr>
+                            }      
+                                
+                        </table>
+
+                    </div>
+                </td>
+            }
+            </tr>
+        </thead>
+    }
+</table>
+@*<table>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.booking_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.employee_id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.booking_type_code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.comment)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.start_date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.end_date)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.deleted_flag)
+            </th>
+            <th></th>
+        </tr>
+
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.booking_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.employee_id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.booking_type_code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.comment)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.start_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.end_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.deleted_flag)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+            </td>
+        </tr>}*@
+
