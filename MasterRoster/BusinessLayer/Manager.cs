@@ -100,12 +100,12 @@ namespace MasterRoster.BusinessLayer
             return _db.BookingTypes.ToList();
         }
 
-        public Employee GetEmployeeByNumber(string employeeNum)
+        public Employee GetEmployeeById(int? employeeId)
         {
             Employee employee = null;
-            if(!string.IsNullOrEmpty(employeeNum))
+            if(employeeId != null && employeeId != 0)
             {
-                employee = _db.Employees.Where(e => e.employee_num == employeeNum).SingleOrDefault();
+                employee = _db.Employees.Where(e => e.employee_id == employeeId).SingleOrDefault();
             }
             return employee;
         }

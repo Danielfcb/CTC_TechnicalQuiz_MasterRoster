@@ -1,5 +1,4 @@
-﻿using MasterRoster.BusinessLayer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,25 +6,26 @@ using System.Web.Mvc;
 
 namespace MasterRoster.Controllers
 {
-    public class EmployeesController : Controller
+    public class ReporsController : Controller
     {
-        private Manager _manager = new Manager();
+        //
+        // GET: /Repors/
+
         public ActionResult Index()
         {
-            var top100Employees = _manager.GetTop100Employees();
-            return View(top100Employees);
-        }
-
-        [HttpGet]
-        public ActionResult Details()
-        {
-            int employeeId = Convert.ToInt32(Request.QueryString["employeeId"]);
-            var employee = _manager.GetEmployeeById(employeeId);
-            return View(employee);
+            return View();
         }
 
         //
-        // GET: /Employees/Create
+        // GET: /Repors/Details/5
+
+        public ActionResult Details(int id)
+        {
+            return View();
+        }
+
+        //
+        // GET: /Repors/Create
 
         public ActionResult Create()
         {
@@ -33,7 +33,7 @@ namespace MasterRoster.Controllers
         }
 
         //
-        // POST: /Employees/Create
+        // POST: /Repors/Create
 
         [HttpPost]
         public ActionResult Create(FormCollection collection)
@@ -51,7 +51,7 @@ namespace MasterRoster.Controllers
         }
 
         //
-        // GET: /Employees/Edit/5
+        // GET: /Repors/Edit/5
 
         public ActionResult Edit(int id)
         {
@@ -59,7 +59,7 @@ namespace MasterRoster.Controllers
         }
 
         //
-        // POST: /Employees/Edit/5
+        // POST: /Repors/Edit/5
 
         [HttpPost]
         public ActionResult Edit(int id, FormCollection collection)
@@ -77,7 +77,7 @@ namespace MasterRoster.Controllers
         }
 
         //
-        // GET: /Employees/Delete/5
+        // GET: /Repors/Delete/5
 
         public ActionResult Delete(int id)
         {
@@ -85,7 +85,7 @@ namespace MasterRoster.Controllers
         }
 
         //
-        // POST: /Employees/Delete/5
+        // POST: /Repors/Delete/5
 
         [HttpPost]
         public ActionResult Delete(int id, FormCollection collection)

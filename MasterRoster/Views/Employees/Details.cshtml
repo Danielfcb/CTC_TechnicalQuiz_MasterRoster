@@ -4,75 +4,54 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
+<br />
 <fieldset>
-    <legend>Employee</legend>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.employee_id)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.employee_id)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.employee_num)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.employee_num)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.name)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.status)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.status)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.seniority_date)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.seniority_date)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.roletype_id)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.roletype_id)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.department_id)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.department_id)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.crew_id)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.crew_id)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.supervisor_id)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.supervisor_id)
-    </div>
+    <legend>Employee info for @Model.name</legend>
+    <table class="table">
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.employee_id)</th>
+            <th>@Html.DisplayNameFor(model => model.employee_num)</th>
+            <th>@Html.DisplayNameFor(model => model.status)</th>
+            <th>@Html.DisplayNameFor(model => model.roletype_id)</th>
+            <th>@Html.DisplayNameFor(model => model.department_id)</th>
+            <th>@Html.DisplayNameFor(model => model.Crew.crew_code)</th>
+            <th>@Html.DisplayNameFor(model => model.supervisor_id)</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>@Html.DisplayFor(model => model.employee_id)</td>
+            <td>@Html.DisplayFor(model => model.employee_num)</td>
+            <td>@Html.DisplayFor(model => model.status)</td>
+            <td>@Html.DisplayFor(model => model.RoleType.roletype_name)</td>
+            <td>@Html.DisplayFor(model => model.Department.department_name)</td>
+            <td>@Html.DisplayFor(model => model.Crew.crew_code)</td>
+            <td>@Html.DisplayFor(model => model.supervisor_id)</td>
+        </tr>
+    </table>
+   
+    <br />
+    <legend>Employee Bookings</legend>
+    <table class="table">
+        <tr>
+            <th>Booking Id</th>
+            <th>Booking Type</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th></th>
+        </tr>
+        @foreach (var booking in Model.Bookings)
+        {
+            
+            <tr>
+                <td>@booking.booking_id</td> 
+                <td>@booking.BookingType.booking_type_name</td>
+                <td>@booking.start_date.ToString("MM/dd/yyyy")</td>
+                <td>@booking.end_date.ToString("MM/dd/yyyy")</td>
+                <td><a href="/bookings/edit?bookingId=@booking.booking_id">Edit</a></td>
+            </tr>
+        }
+    </table>
 </fieldset>
 <p>
-    @Html.ActionLink("Edit", "Edit", new { /* id=Model.PrimaryKey */ }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

@@ -13,17 +13,6 @@ namespace MasterRoster.Controllers
     {
 
         private Manager _manager = new Manager();
-        //public ActionResult Index()
-        //{
-            //var currentWeeksBooking = _manager.GetCurrentWeeksBooking();
-
-            //_manager.GetWeeklyBookingCellResults(DateTime.Today);
-
-            //return View("Index2", _manager.GetCurrentWeeksBooking());
-
-            //var weeklyBookingValidationResults = _manager.GetWeeklyBookingCellResults(DateTime.Today);
-            //return View(weeklyBookingValidationResults);
-        //}
 
         public ActionResult WeeklyBookings()
         {
