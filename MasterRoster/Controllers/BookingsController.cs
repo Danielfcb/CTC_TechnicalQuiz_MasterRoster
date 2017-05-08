@@ -71,7 +71,7 @@ namespace MasterRoster.Controllers
             var bookingAddForm = new BookingAddForm()
             {
                 BookingTypes = new SelectList(allBookingTypes , "booking_type_code", "booking_type_name"),
-                Employees = new SelectList(allEmployees, "employee_Id", "name")
+                Employees = new SelectList(allEmployees, "employee_id", "name")
             };
 
             return View(bookingAddForm);

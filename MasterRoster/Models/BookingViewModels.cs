@@ -1,6 +1,7 @@
 ﻿using MasterRoster.DataAccessLayer;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -14,16 +15,22 @@ namespace MasterRoster.Models
             public SelectList Employees { get; set; }
 
             public SelectList BookingTypes { get; set; }
+            [Required]
             public DateTime StartDate { get; set; }
+            [Required]
             public DateTime EndDate { get; set; }
+            [Required]
+            public string Comment { get;set;}
+            
         }
 
         public class BookingAdd
         {
-            public int EmployeeId { get; set; }
+            public int Employee_Id { get; set; }
             public string BookingType { get; set; }
             public DateTime StartDate { get; set; }
             public DateTime EndDate { get; set; }
+            [Required]
             public string Comment { get; set; }
         }
 

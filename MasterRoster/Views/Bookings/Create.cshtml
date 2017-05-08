@@ -3,22 +3,27 @@
 @{
     ViewBag.Title = "Create";
 }
+<script src="~/Scripts/validateForm.js"></script>
+<legend>Add a booking</legend>
 
-<h2>Add a booking</h2>
-
-@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+@using (Html.BeginForm(null, null, FormMethod.Post, new { enctype = "multipart/form-data", onsubmit = "return validateBookingForm();" }))
 {
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
 
+        <div class="form-group alert">
+            <div class="col-md-2"></div>
+            <div class="col-md-10 text-danger danger" ><p id="ErrorSummary" class="danger"></p></div>
+        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.Employees, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownList("EmployeeId", Model.Employees, htmlAttributes: new { @class = "form-control" })
+                @Html.DropDownList("employee_id", Model.Employees, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.Employees, "", new { @class = "text-danger" })
             </div>
-        </div><br />
+        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.BookingTypes, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -26,15 +31,14 @@
                 @Html.DropDownList("BookingType", Model.BookingTypes, htmlAttributes: new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.BookingTypes, "", new { @class = "text-danger" })
             </div>
-        </div><br />
-
+        </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @*@Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.StartDate, "", new { @class = "text-danger" })*@
-                <input name ="startDate" type="date" />
+                <input name="startDate" id="startDate" type="date" />
             </div>
         </div>
 
@@ -43,16 +47,24 @@
             <div class="col-md-10">
                 @*@Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
                 @Html.ValidationMessageFor(model => model.EndDate, "", new { @class = "text-danger" })*@
-                <input name="endDate" type="date" />
+                <input name="endDate" id="endDate" type="date" />
+
             </div>
         </div>
 
 
-        <div>
+        <div class="form-group">
             @Html.Label("Comment", htmlAttributes: new { @class = "control-label col-md-2" })
-            @Html.TextArea("Comment")
+            <div class="col-md-10">
+                @Html.TextArea("Comment")
+            </div>
         </div>
 
-        <button>Submit</button>
+        <div class="form-group">
+            <div class="col-md-10">
+                <button>Submit</button>
+            </div>
+        </div>
+
     </div>
 }

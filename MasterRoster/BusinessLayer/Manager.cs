@@ -75,7 +75,7 @@ namespace MasterRoster.BusinessLayer
             Booking booking = new Booking()
             {
                 comment = form.Comment,
-                employee_id = form.EmployeeId,
+                employee_id = form.Employee_Id,
                 start_date = Convert.ToDateTime(form.StartDate),
                 end_date = Convert.ToDateTime(form.EndDate),
                 deleted_flag = false,

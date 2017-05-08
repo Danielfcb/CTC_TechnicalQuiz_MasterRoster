@@ -2,34 +2,33 @@
 @{
     ViewBag.Title = "Index";
 }
-<script>
-
-    function ShowWeeklyReport()
-    {
-        window.location.replace("/Bookings/WeeklyBookings?StartDate=" + $("#dateInWeek").val());
-    }
-</script>
-<h3>Weekly Bookingssss</h3>
+<script src="~/Scripts/CustomFunctions.js"></script>
+<h3>Weekly Bookings</h3>
 
 <table class="table">
-    <tr class="progress">
-        <th>Choose a date <input type="Date" value="" id="dateInWeek" /></th>
-        <th><button name="Search" value="Search" onclick="ShowWeeklyReport()">Search</button></th>
-        <th><button name="CreateReport" value="CreateReport" onclick="">Create Report</button></th>
-        <th class="btn-block">@Html.ActionLink("Create New Booking", "Create")</th>
+    <tr class="alert-danger">
+        <th>Choose a date <input type="Date" value="" id="dateInWeek" /></th>       
+        <th style="float:right;">
+            <button class="btn-link" name="CreateReport" value="CreateReport" onclick="">Create Report</button>
+            <button class="btn-link" name="CreateBooking" value="CreateBooking" onclick="RedirectToCreateBooking()">Create Booking</button>
+        </th>
     </tr>
+    <tr class="alert-danger">
+        <th colspan="2">&nbsp;&nbsp;&nbsp;<button class="" name="Search" value="Search" onclick="RedirectToWeeklyReport()">Search</button></th>
+    </tr>
+
 </table>
 
 <div class="container">
-    <div class="row col-md-3"></div>
-        <div class="row col-md-6">
+    <div class="row col-md-1"></div>
+        <div class="row col-md-10">
             <table class="table table-bordered">
                 <thead>
-                    <tr>
-                        <th width="25%"></th>
-                        <th width="25%">Day Shift</th>
-                        <th width="25%">Afternoon Shift</th>
-                        <th width="25%">Evening Shift</th>
+                    <tr >
+                        <th width="25%" style="text-align:center;"></th>
+                        <th width="25%" style="text-align:center;">Day Shift</th>
+                        <th width="25%" style="text-align:center;">Afternoon Shift</th>
+                        <th width="25%" style="text-align:center;">Evening Shift</th>
                     </tr>
                 </thead>
 
@@ -41,7 +40,7 @@
                 {
                     <thead>
                         <tr>
-                            <td>@day.ToString() (@Model.Where(b => b.BookingDay == day).Select(b =>b.BookingDate).ToList()[0].ToString("MM/dd/yyyy"))</td>
+                            <td><b>@day.ToString() (@Model.Where(b => b.BookingDay == day).Select(b =>b.BookingDate).ToList()[0].ToString("MM/dd/yyyy"))</b></td>
                             @foreach (var crew in Model.Select(b => b.BookingCrew).Distinct())
                             {
                                 var cellData = Model.Where(m => m.BookingCrew == crew && m.BookingDay == day);
@@ -49,9 +48,9 @@
                                 var validationMessages = cellData.Select(b => b.ValidationMessages).SingleOrDefault();
                                 string backgroundColor = "#FF4500";
                                 if (isValid) { backgroundColor = "#228B22"; }
-                                <td title="@string.Join("\n",validationMessages)" style="background-color: @backgroundColor" onclick="window.location = '/Bookings/Details?Crew=@crew&Date=@cellData.Select(c => c.BookingDate).SingleOrDefault().ToString("MM/dd/yyyy")'">
+                                <td  title="@string.Join("\n",validationMessages)" style="Text-align:center;background-color: @backgroundColor;" onclick="window.location = '/Bookings/Details?Crew=@crew&Date=@cellData.Select(c => c.BookingDate).SingleOrDefault().ToString("MM/dd/yyyy")'">
                                     @if (!isValid)
-                                    { <p>Attention Required</p> }
+                                    { <text>Attention Required</text> }
                                 </td>
                             }
                         </tr>
@@ -59,9 +58,9 @@
                     </thead>
                 }
             </table>
-            <p> ** Hover over fields for more info</p>
-            <p> ** Red field indicates invalid shift</p>
-            <p> ** Green field indicates valid shift</p>
+            <p class="alert-info"> ** Hover over fields for more info</p>
+            <p class="alert-danger"> ** Red field indicates invalid shift</p>
+            <p class="alert-success"> ** Green field indicates valid shift</p>
         </div>
-    <div class="row col-md-3"></div>
+    <div class="row col-md-1"></div>
 </div>
