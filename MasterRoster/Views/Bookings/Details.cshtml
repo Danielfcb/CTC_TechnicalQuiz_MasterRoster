@@ -1,0 +1,40 @@
+﻿@model MasterRoster.Models.BookingViewModels.BookingCellInfoViewModel
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h3> </h3>
+
+<fieldset>
+    <legend>Booking info for crew @Model.CrewCode on @Model.BookingDay (@Model.BookingDate.ToString("MM/dd/yyyy"))</legend>
+
+    @if (!Model.isShiftValid)
+    {
+        <div class="active">
+            <legend style="background-color:orangered">Please notice that she shift is not scheduled properly!</legend>
+            @foreach (var message in Model.ValidationMessages)
+            {
+            <p>@message</p>
+            }
+        </div>
+    }
+    <br /><br />
+    @foreach (var role in Model.Employees.Select(e => e.RoleType.roletype_name).Distinct())
+    {
+        <legend>@string.Concat(role,"s") (@Model.Employees.Where(e=>e.RoleType.roletype_name == role).Count()/@Model.GetEmployeeCountByRole(role))</legend>
+
+        foreach (var booking in Model.Bookings)
+        {
+            if (booking.Employee.RoleType.roletype_name == role)
+            {
+                <p>@booking.Employee.name</p>
+            }
+
+        }
+    }
+</fieldset>
+<p>
+    @Html.ActionLink("Add an employee to the current shift", "Create", new { /* id=Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Weeklybookings")
+</p>

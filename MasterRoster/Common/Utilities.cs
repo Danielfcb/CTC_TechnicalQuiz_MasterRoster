@@ -18,6 +18,7 @@ namespace MasterRoster.Common
             TimeSpan ts = new TimeSpan(5, 45, 0);
             startingMonday = today.AddDays(-1 * diff).Date + ts;
             endingMonday = today.AddDays(7 - diff).Date + ts;
+
         }
     }
 }

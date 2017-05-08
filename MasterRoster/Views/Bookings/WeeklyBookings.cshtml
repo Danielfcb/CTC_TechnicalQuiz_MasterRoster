@@ -1,0 +1,67 @@
+﻿@model List<MasterRoster.Models.BookingViewModels.BookingCellValidationViewModel>
+@{
+    ViewBag.Title = "Index";
+}
+<script>
+
+    function ShowWeeklyReport()
+    {
+        window.location.replace("/Bookings/WeeklyBookings?StartDate=" + $("#dateInWeek").val());
+    }
+</script>
+<h3>Weekly Bookingssss</h3>
+
+<table class="table">
+    <tr class="progress">
+        <th>Choose a date <input type="Date" value="" id="dateInWeek" /></th>
+        <th><button name="Search" value="Search" onclick="ShowWeeklyReport()">Search</button></th>
+        <th><button name="CreateReport" value="CreateReport" onclick="">Create Report</button></th>
+        <th class="btn-block">@Html.ActionLink("Create New Booking", "Create")</th>
+    </tr>
+</table>
+
+<div class="container">
+    <div class="row col-md-3"></div>
+        <div class="row col-md-6">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th width="25%"></th>
+                        <th width="25%">Day Shift</th>
+                        <th width="25%">Afternoon Shift</th>
+                        <th width="25%">Evening Shift</th>
+                    </tr>
+                </thead>
+
+
+                @* Gooing through days of the week and populating the cells *@
+                @foreach (var day in Enum.GetValues(typeof(DayOfWeek))
+                                                    .OfType<DayOfWeek>()
+                                                    .OrderBy(day => day < DayOfWeek.Monday))
+                {
+                    <thead>
+                        <tr>
+                            <td>@day.ToString() (@Model.Where(b => b.BookingDay == day).Select(b =>b.BookingDate).ToList()[0].ToString("MM/dd/yyyy"))</td>
+                            @foreach (var crew in Model.Select(b => b.BookingCrew).Distinct())
+                            {
+                                var cellData = Model.Where(m => m.BookingCrew == crew && m.BookingDay == day);
+                                var isValid = cellData.Select(b => b.IsValid).SingleOrDefault();
+                                var validationMessages = cellData.Select(b => b.ValidationMessages).SingleOrDefault();
+                                string backgroundColor = "#FF4500";
+                                if (isValid) { backgroundColor = "#228B22"; }
+                                <td title="@string.Join("\n",validationMessages)" style="background-color: @backgroundColor" onclick="window.location = '/Bookings/Details?Crew=@crew&Date=@cellData.Select(c => c.BookingDate).SingleOrDefault().ToString("MM/dd/yyyy")'">
+                                    @if (!isValid)
+                                    { <p>Attention Required</p> }
+                                </td>
+                            }
+                        </tr>
+
+                    </thead>
+                }
+            </table>
+            <p> ** Hover over fields for more info</p>
+            <p> ** Red field indicates invalid shift</p>
+            <p> ** Green field indicates valid shift</p>
+        </div>
+    <div class="row col-md-3"></div>
+</div>

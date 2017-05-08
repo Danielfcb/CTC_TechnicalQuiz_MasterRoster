@@ -16,7 +16,7 @@ namespace MasterRoster
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Bookings", action = "Index", id = UrlParameter.Optional }
+                defaults: new { controller = "Bookings", action = "WeeklyBookings", id = UrlParameter.Optional }
             );
         }
     }

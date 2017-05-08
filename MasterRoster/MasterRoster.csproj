@@ -347,11 +347,12 @@
     <Content Include="Views\Web.config" />
     <None Include="readme.txt" />
     <Content Include="Views\Employees\Index.cshtml" />
-    <Content Include="Views\Bookings\Index.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Employees\Details.cshtml" />
     <Content Include="Views\Bookings\Create.cshtml" />
+    <Content Include="Views\Bookings\WeeklyBookings.cshtml" />
+    <Content Include="Views\Bookings\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

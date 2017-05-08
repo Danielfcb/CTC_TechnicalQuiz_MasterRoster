@@ -6,9 +6,6 @@
     <title>@ViewBag.Title - WebAppProjectV3</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-
-    
-
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -27,7 +24,7 @@
                     @if (Request.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Employees", "Index", "Employees")</li>
-                        <li>@Html.ActionLink("Bookings", "Index", "Bookings")</li>
+                        <li>@Html.ActionLink("Bookings", "WeeklyBookings", "Bookings")</li>
                     }
 
                 </ul>
@@ -40,7 +37,7 @@
         @RenderBody()
         <hr />
         <footer style="text-align:center;">
-            <p>This is not a commercial website. It's designed for educational purposes.</p>
+            <p>CTC - Master Roster @DateTime.Now.ToString("yyyy")</p>
         </footer>
     </div>
     

@@ -1,6 +1,7 @@
 ﻿using MasterRoster.BusinessLayer;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -12,18 +13,51 @@ namespace MasterRoster.Controllers
     {
 
         private Manager _manager = new Manager();
-        public ActionResult Index()
+        //public ActionResult Index()
+        //{
+            //var currentWeeksBooking = _manager.GetCurrentWeeksBooking();
+
+            //_manager.GetWeeklyBookingCellResults(DateTime.Today);
+
+            //return View("Index2", _manager.GetCurrentWeeksBooking());
+
+            //var weeklyBookingValidationResults = _manager.GetWeeklyBookingCellResults(DateTime.Today);
+            //return View(weeklyBookingValidationResults);
+        //}
+
+        public ActionResult WeeklyBookings()
         {
-            var currentWeeksBooking = _manager.GetCurrentWeeksBooking();
-            return View(currentWeeksBooking);
+            List<BookingCellValidationViewModel> weeklyBookingValidationResults = new List<BookingCellValidationViewModel>();
+            DateTime startDate = new DateTime();
+            try
+            {
+                if (!string.IsNullOrEmpty(Request.QueryString["startDate"]))
+                {
+                    startDate = Convert.ToDateTime(Request.QueryString["startDate"]);                   
+                }
+                else
+                {
+                    startDate = DateTime.Today;
+                }
+                weeklyBookingValidationResults = _manager.GetWeeklyBookingCellResults(startDate);
+            }
+            catch
+            {
+                weeklyBookingValidationResults = _manager.GetWeeklyBookingCellResults(DateTime.Today);
+            }
+
+            return View(weeklyBookingValidationResults);
         }
 
         //
         // GET: /Bookings/Details/5
 
-        public ActionResult Details(int id)
+        public ActionResult Details()
         {
-            return View();
+            var crew = Request.QueryString["Crew"];
+            var date = Convert.ToDateTime(Request.QueryString["Date"]);
+            var bookingCellInfo = _manager.GetBookingCellInfo(crew,date);
+            return View(bookingCellInfo);
         }
 
         //
@@ -37,7 +71,7 @@ namespace MasterRoster.Controllers
             var bookingAddForm = new BookingAddForm()
             {
                 BookingTypes = new SelectList(allBookingTypes , "booking_type_code", "booking_type_name"),
-                Employees = new SelectList(allEmployees, "employee_num", "name")
+                Employees = new SelectList(allEmployees, "employee_Id", "name")
             };
 
             return View(bookingAddForm);
@@ -56,7 +90,7 @@ namespace MasterRoster.Controllers
                 {
                     _manager.InsertBookingToDatabase(form);
                 }
-                return RedirectToAction("Index");
+                return RedirectToAction("WeeklyBookings");
             }
             catch
             {
