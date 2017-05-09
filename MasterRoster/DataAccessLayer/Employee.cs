@@ -11,7 +11,8 @@ namespace MasterRoster.DataAccessLayer
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel.DataAnnotations;
+
     public partial class Employee
     {
         public Employee()
@@ -19,15 +20,23 @@ namespace MasterRoster.DataAccessLayer
             this.Bookings = new HashSet<Booking>();
             this.Employees1 = new HashSet<Employee>();
         }
-    
+        [Display(Name = "Employee ID")]
         public int employee_id { get; set; }
+        [Display(Name = "Employee Number")]
         public string employee_num { get; set; }
+        [Display(Name = "Name")]
         public string name { get; set; }
+        [Display(Name ="Active")]
         public bool status { get; set; }
+        [Display(Name ="Seniority Date")]
         public System.DateTime seniority_date { get; set; }
+        [Display(Name = "Role Type ID")]
         public Nullable<int> roletype_id { get; set; }
+        [Display(Name ="Department ID")]
         public Nullable<int> department_id { get; set; }
+        [Display(Name = "Crew ID")]
         public Nullable<int> crew_id { get; set; }
+        [Display(Name ="Supervisor ID")]
         public Nullable<int> supervisor_id { get; set; }
     
         public virtual ICollection<Booking> Bookings { get; set; }

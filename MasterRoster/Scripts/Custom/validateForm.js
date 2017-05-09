@@ -24,7 +24,9 @@
         errorMessages += "* Commnet can't be empty<br />";
         result = false;
     }
-
-    $("#ErrorSummary").html(errorMessages);
+    if (result == false)
+    {
+        $("#ErrorSummary").html(errorMessages);
+    }
     return result;
 }

@@ -14,25 +14,30 @@ namespace MasterRoster.Controllers
 
         private Manager _manager = new Manager();
 
-        public ActionResult WeeklyBookings()
+        public ActionResult BookingsTable()
         {
             List<BookingCellValidationViewModel> weeklyBookingValidationResults = new List<BookingCellValidationViewModel>();
             DateTime startDate = new DateTime();
+
+            string bookingPeriod = "Weekly";
+            startDate = DateTime.Today; 
+            
             try
             {
                 if (!string.IsNullOrEmpty(Request.QueryString["startDate"]))
                 {
                     startDate = Convert.ToDateTime(Request.QueryString["startDate"]);                   
                 }
-                else
+                if(!string.IsNullOrEmpty(Request.QueryString["bookingPeriod"]))
                 {
-                    startDate = DateTime.Today;
+                    bookingPeriod = Request.QueryString["bookingPeriod"].ToString();
                 }
-                weeklyBookingValidationResults = _manager.GetWeeklyBookingCellResults(startDate);
+                weeklyBookingValidationResults = _manager.GetBookingCellResults(startDate,bookingPeriod);
             }
             catch
             {
-                weeklyBookingValidationResults = _manager.GetWeeklyBookingCellResults(DateTime.Today);
+                bookingPeriod = "Weekly";
+                weeklyBookingValidationResults = _manager.GetBookingCellResults(DateTime.Today, bookingPeriod);
             }
 
             return View(weeklyBookingValidationResults);
@@ -54,16 +59,7 @@ namespace MasterRoster.Controllers
 
         public ActionResult Create()
         {
-            var allEmployees = _manager.GetAllEmployees();
-            var allBookingTypes = _manager.GetAllBookingTypes();
-
-            var bookingAddForm = new BookingAddForm()
-            {
-                BookingTypes = new SelectList(allBookingTypes , "booking_type_code", "booking_type_name"),
-                Employees = new SelectList(allEmployees, "employee_id", "name")
-            };
-
-            return View(bookingAddForm);
+            return View(_manager.CreateBookingAddForm());
         }
 
         //
@@ -74,12 +70,31 @@ namespace MasterRoster.Controllers
         {
             try
             {
-                // TODO: Add insert logic here
                 if(form != null)
                 {
-                    _manager.InsertBookingToDatabase(form);
+                    List<string> validationMessage;
+                    if(!_manager.InsertBookingToDatabase(form, out validationMessage))
+                    {
+                        // Re-populate booking form with validation message
+                        BookingAddForm repopulatedForm = _manager.CreateBookingAddForm();
+                        repopulatedForm.StartDate = form.StartDate;
+                        repopulatedForm.EndDate = form.EndDate;
+                        repopulatedForm.Comment = form.Comment;
+                        repopulatedForm.Employees = new SelectList(_manager.GetAllEmployees(), "employee_id", "name", form.Employee_Id);
+                        repopulatedForm.ValidationMessages = validationMessage;
+                        repopulatedForm.Comment = form.Comment;
+                        return View(repopulatedForm);
+                    }
+                    else
+                    {
+                        return RedirectToAction("BookingsTable");
+                    }
                 }
-                return RedirectToAction("WeeklyBookings");
+                else
+                {
+                    return RedirectToAction("BookingsTable");
+                }
+                
             }
             catch
             {
@@ -87,29 +102,69 @@ namespace MasterRoster.Controllers
             }
         }
 
-        //
-        // GET: /Bookings/Edit/5
 
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        //
-        // POST: /Bookings/Edit/5
-
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit()
         {
             try
             {
-                // TODO: Add update logic here
+                if (Request.QueryString["bookingId"] != null)
+                {
+                    int bookingId = Convert.ToInt32(Request.QueryString["bookingId"]);
+                    BookingEditForm form =  _manager.CreateBookingEditForm(bookingId);
 
-                return RedirectToAction("Index");
+                    if(form != null)
+                    {
+                        return View(form);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Bookings");
+                    }
+                }
             }
             catch
             {
-                return View();
+                return RedirectToAction("Bookings");
+            }
+            return View();
+        }
+
+
+        [HttpPost]
+        public ActionResult Edit(BookingEdit form)
+        {
+            try
+            {
+                if(form != null)
+                {
+                    List<string> validationMessages;
+                    if(_manager.UpdateBooking(form, out validationMessages))
+                    {
+                        return RedirectToAction("BookingsTable");
+                    }
+                    else
+                    {
+                        // Re-populate booking form with validation message
+                        BookingEditForm repopulatedForm = _manager.CreateBookingEditForm(form.EmployeeId);
+                        repopulatedForm.StartDate = form.StartDate;
+                        repopulatedForm.EndDate = form.EndDate;
+                        repopulatedForm.Comment = form.Comment;
+                        repopulatedForm.ValidationMessages = validationMessages;
+                        repopulatedForm.EmployeeId = form.EmployeeId;
+                        repopulatedForm.EmployeeName = form.EmployeeName;
+                        repopulatedForm.EmployeeNumber = form.EmployeeNumber;
+                        repopulatedForm.Comment = form.Comment;
+                        repopulatedForm.BookingType = new SelectList(_manager.GetAllBookingTypes(), "booking_type_code", "booking_type_name");
+                        return View(repopulatedForm);
+                    }
+                }
+                // TODO: Add update logic here
+
+                return RedirectToAction("BookingsTable");
+            }
+            catch
+            {
+                return RedirectToAction("BookingsTable");
             }
         }
 

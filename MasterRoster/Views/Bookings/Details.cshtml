@@ -12,7 +12,7 @@
     @if (!Model.isShiftValid)
     {
         <div class="active">
-            <legend style="background-color:orangered">Please notice that she shift is not scheduled properly!</legend>
+            <legend style="background-color:orangered">Please note that the shift is not scheduled properly!</legend>
             @foreach (var message in Model.ValidationMessages)
             {
             <p>@message</p>
@@ -20,6 +20,7 @@
         </div>
     }
     <br /><br />
+    <legend>Employees scheduled in this shift (@Model.Employees.Count())</legend>
     @foreach (var role in Model.Employees.Select(e => e.RoleType.roletype_name).Distinct())
     {
         <legend>@string.Concat(role,"s") (@Model.Employees.Where(e=>e.RoleType.roletype_name == role).Count()/@Model.GetEmployeeCountByRole(role))</legend>
@@ -34,7 +35,8 @@
         }
     }
 </fieldset>
+<hr />
 <p>
-    @Html.ActionLink("Book an Employee", "Create", new { /* id=Model.PrimaryKey */ }) |
-    @Html.ActionLink("Back to List", "Weeklybookings")
+    @Html.ActionLink("Book an Employee", "Create") |
+    @Html.ActionLink("Back to List", "BookingsTable")
 </p>

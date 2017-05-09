@@ -20,5 +20,11 @@ namespace MasterRoster.Common
             endingMonday = today.AddDays(7 - diff).Date + ts;
 
         }
+
+        public static void GetCurrentMonth(DateTime date, out DateTime firstDayOfMonth, out DateTime lastDayOfMonth)
+        {
+            firstDayOfMonth = new DateTime(date.Year, date.Month, 1);
+            lastDayOfMonth = firstDayOfMonth.AddMonths(1).AddDays(-1);
+        }
     }
 }

@@ -1,0 +1,96 @@
+﻿@model MasterRoster.Models.BookingViewModels.BookingEditForm
+
+@{
+    ViewBag.Title = "Edit";
+}
+<script src="~/Scripts/validateForm.js"></script>
+<br />
+<legend>Booking Edit Form</legend>
+@using (Html.BeginForm( null,null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+      
+
+        <input type="hidden" name="BookingId" value="@Model.BookingId"/>
+        <input type="hidden" name="EmployeeId" value="@Model.EmployeeId"/>
+        <div class="form-horizontal">
+
+            <div class="form-group alert">
+                <div class="col-md-2"></div>
+                <div class="col-md-10 text-danger danger">
+                    <p id="ErrorSummary" class="danger">
+                        @foreach (var message in Model.ValidationMessages)
+                        {
+                            @message<br />
+                        }
+
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EmployeeName, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input class="form-control" type="text" name="EmployeeName" readonly value="@Model.EmployeeName"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EmployeeNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input class="form-control" type="text" name="EmployeeNumber" readonly value="@Model.EmployeeNumber" />
+                </div>
+                </div>
+
+            @{ var sd = (Model.StartDate != null) ? (Model.StartDate.ToString("yyyy-MM-dd")) : (""); }
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input class="col-md-4" type="date" name="StartDate" value="@sd" />
+                    @Html.ValidationMessageFor(model => model.StartDate)
+                </div>
+            </div>
+
+
+            @{ var ed = (Model.EndDate != null) ? (Model.EndDate.ToString("yyyy-MM-dd")) : (""); }
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <input class="col-md-4" type="date" name="EndDate" value="@ed" />
+                    @Html.ValidationMessageFor(model => model.EndDate)
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.BookingType, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownList("BookingType", Model.BookingType, htmlAttributes: new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.BookingType, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.Label("Comment", htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextArea("Comment", htmlAttributes: new { @class = "form-control" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <button>Submit</button>
+                </div>
+            </div>
+        </div>
+
+}
+
+<div>
+    <a href="/Employees/Details?employeeId=@Model.EmployeeId">Back to List</a>
+</div>
+
+

@@ -2,19 +2,20 @@
 @{
     ViewBag.Title = "Index";
 }
-<script src="~/Scripts/CustomFunctions.js"></script>
+<script src="~/Scripts/Custom/CustomFunctions.js"></script>
 <h3>Weekly Bookings</h3>
 
 <table class="table">
     <tr class="alert-danger">
-        <th>Choose a date <input type="Date" value="" id="dateInWeek" /></th>       
+        <th>Choose a date <input type="Date" value="" id="dateInWeek"/></th>       
         <th style="float:right;">
             <button class="btn-link" name="CreateReport" value="CreateReport" onclick="">Create Report</button>
             <button class="btn-link" name="CreateBooking" value="CreateBooking" onclick="RedirectToCreateBooking()">Create Booking</button>
         </th>
     </tr>
     <tr class="alert-danger">
-        <th colspan="2">&nbsp;&nbsp;&nbsp;<button class="" name="Search" value="Search" onclick="RedirectToWeeklyReport()">Search</button></th>
+        <th colspan="2">&nbsp;&nbsp;&nbsp;<button class="" name="Search" value="Search" onclick="RedirectToWeeklyReport()">Weekly Bookings</button>
+        &nbsp;&nbsp;&nbsp;<button class="" name="Search" value="Search" onclick="RedirectToMonthlyReport()">Monthly Bookings</button></th>
     </tr>
 
 </table>
@@ -32,18 +33,14 @@
                     </tr>
                 </thead>
 
-
-                @* Gooing through days of the week and populating the cells *@
-                @foreach (var day in Enum.GetValues(typeof(DayOfWeek))
-                                                    .OfType<DayOfWeek>()
-                                                    .OrderBy(day => day < DayOfWeek.Monday))
+                @foreach(var day in Model.Select(b => b.BookingDate).Distinct().OrderBy(b=>b.Date).ToList())
                 {
                     <thead>
                         <tr>
-                            <td><b>@day.ToString() (@Model.Where(b => b.BookingDay == day).Select(b =>b.BookingDate).ToList()[0].ToString("MM/dd/yyyy"))</b></td>
+                            <td><b>@day.DayOfWeek (@day.ToString("MM/dd/yyyy"))</b></td>
                             @foreach (var crew in Model.Select(b => b.BookingCrew).Distinct())
                             {
-                                var cellData = Model.Where(m => m.BookingCrew == crew && m.BookingDay == day);
+                                var cellData = Model.Where(m => m.BookingCrew == crew && m.BookingDate == day);
                                 var isValid = cellData.Select(b => b.IsValid).SingleOrDefault();
                                 var validationMessages = cellData.Select(b => b.ValidationMessages).SingleOrDefault();
                                 string backgroundColor = "#FF4500";

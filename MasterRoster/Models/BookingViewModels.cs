@@ -12,6 +12,11 @@ namespace MasterRoster.Models
     {
         public class BookingAddForm
         {
+            public BookingAddForm()
+            {
+                ValidationMessages = new List<string>();
+            }
+            [Display(Name = "Employee")]
             public SelectList Employees { get; set; }
 
             public SelectList BookingTypes { get; set; }
@@ -21,17 +26,24 @@ namespace MasterRoster.Models
             public DateTime EndDate { get; set; }
             [Required]
             public string Comment { get;set;}
-            
+            public List<string> ValidationMessages { get; set; }
+
         }
 
         public class BookingAdd
         {
+
+            [Display(Name ="Employee")]
             public int Employee_Id { get; set; }
+            [Display(Name ="Booking Type")]
             public string BookingType { get; set; }
+            [Display(Name ="Start Date")]
             public DateTime StartDate { get; set; }
+            [Display(Name ="End Date")]
             public DateTime EndDate { get; set; }
             [Required]
             public string Comment { get; set; }
+
         }
 
         public class BookingCellValidationViewModel
@@ -83,5 +95,35 @@ namespace MasterRoster.Models
                 return count;
             }
         }
+
+        public class BookingEditForm
+        {
+            public BookingEditForm()
+            {
+                ValidationMessages = new List<string>();
+            }
+            public int BookingId { get; set; }
+            public string EmployeeName { get;set;}
+            public int EmployeeId { get; set; }
+            public string EmployeeNumber { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public SelectList BookingType { get; set; }
+            public string Comment { get; set; }
+            public List<string> ValidationMessages { get; set; }
+        }
+
+        public class BookingEdit
+        {
+            public int BookingId { get; set; }
+            public string EmployeeName { get; set; }
+            public string EmployeeNumber { get; set; }
+            public int EmployeeId { get; set; }
+            public DateTime StartDate { get; set; }
+            public DateTime EndDate { get; set; }
+            public string BookingType { get; set; }
+            public string Comment { get; set; }
+        }
+
     }
 }
