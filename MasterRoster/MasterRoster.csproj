@@ -162,8 +162,6 @@
     <Compile Include="Common\Utilities.cs" />
     <Compile Include="Controllers\BookingsController.cs" />
     <Compile Include="Controllers\EmployeesController.cs" />
-    <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\ReporsController.cs" />
     <Compile Include="DataAccessLayer\Booking.cs">
       <DependentUpon>MasterRosterEntityModel.tt</DependentUpon>
     </Compile>
@@ -201,6 +199,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\BookingViewModels.cs" />
+    <Compile Include="Models\EmployeeViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Content Include="Scripts\Custom\CustomFunctions.js" />
   </ItemGroup>
@@ -349,7 +348,6 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Web.config" />
     <None Include="readme.txt" />
-    <Content Include="Views\Employees\Index.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Employees\Details.cshtml" />
@@ -357,6 +355,7 @@
     <Content Include="Views\Bookings\BookingsTable.cshtml" />
     <Content Include="Views\Bookings\Details.cshtml" />
     <Content Include="Views\Bookings\Edit.cshtml" />
+    <Content Include="Views\Employees\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

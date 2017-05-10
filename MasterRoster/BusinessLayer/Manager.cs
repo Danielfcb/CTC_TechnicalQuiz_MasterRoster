@@ -8,6 +8,8 @@ using System.Web;
 using System.Collections;
 using static MasterRoster.Models.BookingViewModels;
 using System.Web.Mvc;
+using System.Data.Objects;
+using static MasterRoster.Models.EmployeeViewModels;
 
 namespace MasterRoster.BusinessLayer
 {
@@ -32,9 +34,9 @@ namespace MasterRoster.BusinessLayer
             List<string> validationMessages;
             bookingCellInfo.isShiftValid = ValidateBookingCell(date, crew, out validationMessages);
             bookingCellInfo.ValidationMessages = validationMessages;
-            bookingCellInfo.ManagersCount = _db.Employees.Where(e => e.RoleType.roletype_name == "Manager").Count();
-            bookingCellInfo.SupervisorsCount = _db.Employees.Where(e => e.RoleType.roletype_name == "Supervisor").Count();
-            bookingCellInfo.WorkersCounts = _db.Employees.Where(e => e.RoleType.roletype_name == "Worker").Count();
+            bookingCellInfo.ManagersCount = _db.Employees.Where(e => e.RoleType.roletype_name == "Manager" && e.Crew.crew_code == crew).Count();
+            bookingCellInfo.SupervisorsCount = _db.Employees.Where(e => e.RoleType.roletype_name == "Supervisor" && e.Crew.crew_code == crew).Count();
+            bookingCellInfo.WorkersCounts = _db.Employees.Where(e => e.RoleType.roletype_name == "Worker" && e.Crew.crew_code == crew).Count();
 
 
             return bookingCellInfo;
@@ -71,7 +73,19 @@ namespace MasterRoster.BusinessLayer
             return viewModel;
         }
 
-        internal BookingAddForm CreateBookingAddForm()
+        internal BookingAddForm RepopulateCreateForm(BookingAdd form, List<string> validationMessages)
+        {
+            BookingAddForm repopulatedForm = CreateBookingAddForm();
+            repopulatedForm.StartDate = form.StartDate;
+            repopulatedForm.EndDate = form.EndDate;
+            repopulatedForm.Comment = form.Comment;
+            repopulatedForm.Employees = new SelectList(GetAllEmployees(), "employee_id", "name", form.Employee_Id);
+            repopulatedForm.ValidationMessages = validationMessages;
+            repopulatedForm.Comment = form.Comment;
+            return repopulatedForm;
+        }
+
+        public BookingAddForm CreateBookingAddForm()
         {
             var allEmployees = GetAllEmployees();
             var allBookingTypes = GetAllBookingTypes();
@@ -82,6 +96,21 @@ namespace MasterRoster.BusinessLayer
                 Employees = new SelectList(allEmployees, "employee_id", "name")
             };
             return bookingAddForm;
+        }
+
+        public BookingEditForm RepopulateEditForm(BookingEdit form, List<string> validationMessages)
+        {
+            BookingEditForm repopulatedForm = CreateBookingEditForm(form.EmployeeId);
+            repopulatedForm.StartDate = form.StartDate;
+            repopulatedForm.EndDate = form.EndDate;
+            repopulatedForm.Comment = form.Comment;
+            repopulatedForm.ValidationMessages = validationMessages;
+            repopulatedForm.EmployeeId = form.EmployeeId;
+            repopulatedForm.EmployeeName = form.EmployeeName;
+            repopulatedForm.EmployeeNumber = form.EmployeeNumber;
+            repopulatedForm.Comment = form.Comment;
+            repopulatedForm.BookingType = new SelectList(GetAllBookingTypes(), "booking_type_code", "booking_type_name");
+            return repopulatedForm;
         }
 
         public bool InsertBookingToDatabase(BookingAdd form, out List<string>validationMessages)
@@ -213,7 +242,7 @@ namespace MasterRoster.BusinessLayer
             if(result)
             {
                 List<Booking> allBookings = GetAllBookingsForEmployeeId(newBooking.Employee_Id);
-                List<Booking> Conflicts = allBookings.Where(b => ((newBooking.StartDate > b.start_date && newBooking.StartDate < b.end_date) || (newBooking.StartDate < b.start_date && newBooking.EndDate > b.start_date ))).ToList();
+                List<Booking> Conflicts = allBookings.Where(b => ((newBooking.StartDate >= b.start_date && newBooking.StartDate <= b.end_date) || (newBooking.StartDate <= b.start_date && newBooking.EndDate >= b.start_date ))).ToList();
                 result = Conflicts.Count() == 0;
                 if(!result)
                 {
@@ -281,6 +310,22 @@ namespace MasterRoster.BusinessLayer
         {
             return _db.Employees.ToList();
         }
+
+        public AllEmployeesViewModel GetAllEmployees(string crew, string role)
+        {
+            AllEmployeesViewModel model = new AllEmployeesViewModel();
+            model.Employees = _db.Employees.Where(e => e.Crew.crew_code == crew && e.RoleType.roletype_name == role).ToList();
+            model.Crew = crew;
+            model.Role = role;
+            model.AllCrews = new SelectList(GetAllDistinctCrews());
+            model.AllRoles = new SelectList(GetAllDisctinctRoles());
+            return model;
+        }
+
+        public List<string> GetAllDisctinctRoles()
+        {
+            return _db.RoleTypes.Distinct().Select(r => r.roletype_name).ToList();
+        }
         public List<Employee> GetTop100Employees()
         {
             return _db.Employees.Take(100).ToList();
@@ -290,18 +335,18 @@ namespace MasterRoster.BusinessLayer
         {
             bool result = true;
             ValidationMessages = new List<string>();
-            var allBookingsForTheCell = _db.Bookings.Where(b => b.start_date <= day && day <= b.end_date & b.Employee.Crew.crew_code == crew).ToList();
-            if(allBookingsForTheCell.Where(b => b.Employee.RoleType.roletype_name == "Manager").Count() < 0.5 * CountAllManagers())
+            var allBookingsForTheCell = _db.Bookings.Where(b => (EntityFunctions.TruncateTime(b.start_date) <= EntityFunctions.TruncateTime(day)) && (EntityFunctions.TruncateTime(day) <= EntityFunctions.TruncateTime(b.end_date)) && (b.Employee.Crew.crew_code == crew)).ToList();
+            if(allBookingsForTheCell.Where(b => b.Employee.RoleType.roletype_name == "Manager").Count() < 0.5 * CountAllManagersInCrew(crew))
             {
                 ValidationMessages.Add("Not more than %50 of Managers can be scheduled off for a shift");
                 result = false;
             }
-            if (allBookingsForTheCell.Where(b => b.Employee.RoleType.roletype_name == "Manager").Count() < 0.5 * CountAllManagers())
+            if (allBookingsForTheCell.Where(b => b.Employee.RoleType.roletype_name == "Supervisor").Count() < 0.5 * CountAllSupervisorsInCrew(crew))
             {
                 ValidationMessages.Add("Not more than %50 of Supervisors can be scheduled off for a shift");
                 result = false;
             }
-            if (allBookingsForTheCell.Where(b => b.Employee.RoleType.roletype_name == "Worker").Count() < 0.75 * CountAllWorkers())
+            if (allBookingsForTheCell.Where(b => b.Employee.RoleType.roletype_name == "Worker").Count() < 0.75 * CountAllWorkersInCrew(crew))
             {
                 ValidationMessages.Add("Not more than %25 of Workers can be scheduled off for a shift");
 
@@ -310,15 +355,21 @@ namespace MasterRoster.BusinessLayer
             return result;
         }
 
-        public int CountAllManagers()
+        public int CountAllManagersInCrew(string crew)
         {
-            return _db.Employees.Where(e => e.RoleType.roletype_name == "Manager").Count();
+            return _db.Employees.Where(e => e.RoleType.roletype_name == "Manager" && e.Crew.crew_code==crew).Count();
+        }
+
+        public int CountAllSupervisorsInCrew(string crew)
+        {
+            return _db.Employees.Where(e => e.RoleType.roletype_name == "Supervisor" && e.Crew.crew_code == crew).Count();
         }
 
 
-        public int CountAllWorkers()
+        public int CountAllWorkersInCrew(string crew)
         {
-            return _db.Employees.Where(e => e.RoleType.roletype_name == "Worker").Count();
+            return _db.Employees.Where(e => e.RoleType.roletype_name == "Worker" && e.Crew.crew_code == crew).Count();
         }
+
     }
 }

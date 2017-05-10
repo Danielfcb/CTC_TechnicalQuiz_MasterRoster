@@ -23,7 +23,7 @@
     <legend>Employees scheduled in this shift (@Model.Employees.Count())</legend>
     @foreach (var role in Model.Employees.Select(e => e.RoleType.roletype_name).Distinct())
     {
-        <legend>@string.Concat(role,"s") (@Model.Employees.Where(e=>e.RoleType.roletype_name == role).Count()/@Model.GetEmployeeCountByRole(role))</legend>
+        <legend>@string.Concat(role,"s") (@Model.Employees.Where(e=> (e.RoleType.roletype_name == role) && (e.Crew.crew_code == Model.CrewCode)).Count()/@Model.GetEmployeeCountByRole(role))</legend>
 
         foreach (var booking in Model.Bookings)
         {

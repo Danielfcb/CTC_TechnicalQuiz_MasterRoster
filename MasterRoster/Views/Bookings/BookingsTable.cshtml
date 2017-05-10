@@ -7,7 +7,7 @@
 
 <table class="table">
     <tr class="alert-danger">
-        <th>Choose a date <input type="Date" value="" id="dateInWeek"/></th>       
+        <th>Choose a date <input type="Date" id="date" value="@DateTime.Today.ToString("yyyy-MM-dd")"/></th>       
         <th style="float:right;">
             <button class="btn-link" name="CreateReport" value="CreateReport" onclick="">Create Report</button>
             <button class="btn-link" name="CreateBooking" value="CreateBooking" onclick="RedirectToCreateBooking()">Create Booking</button>
@@ -40,14 +40,16 @@
                             <td><b>@day.DayOfWeek (@day.ToString("MM/dd/yyyy"))</b></td>
                             @foreach (var crew in Model.Select(b => b.BookingCrew).Distinct())
                             {
-                                var cellData = Model.Where(m => m.BookingCrew == crew && m.BookingDate == day);
-                                var isValid = cellData.Select(b => b.IsValid).SingleOrDefault();
-                                var validationMessages = cellData.Select(b => b.ValidationMessages).SingleOrDefault();
+                                var cellData = Model.Where(m => m.BookingCrew == crew && m.BookingDate == day).SingleOrDefault();
+                                var isValid = cellData.IsValid;
+                                List<string> validationMessages = cellData.ValidationMessages;
                                 string backgroundColor = "#FF4500";
                                 if (isValid) { backgroundColor = "#228B22"; }
-                                <td  title="@string.Join("\n",validationMessages)" style="Text-align:center;background-color: @backgroundColor;" onclick="window.location = '/Bookings/Details?Crew=@crew&Date=@cellData.Select(c => c.BookingDate).SingleOrDefault().ToString("MM/dd/yyyy")'">
+                                <td  title="@string.Join("\n",validationMessages)" style="Text-align:center;background-color: @backgroundColor;" onclick="window.location = '/Bookings/Details?Crew=@crew&Date=@cellData.BookingDate.ToString("MM/dd/yyyy")'">
                                     @if (!isValid)
                                     { <text>Attention Required</text> }
+                                    else
+                                    { <text>Scheduled</text> }
                                 </td>
                             }
                         </tr>

@@ -12,8 +12,20 @@ namespace MasterRoster.Controllers
         private Manager _manager = new Manager();
         public ActionResult Index()
         {
-            var top100Employees = _manager.GetTop100Employees();
-            return View(top100Employees);
+            string crew = "DAY";
+            string role = "Manager";
+
+            if (!string.IsNullOrEmpty(Request.QueryString["crew"]))
+            {
+                crew = Request.QueryString["crew"].ToString();
+            }
+            if (!string.IsNullOrEmpty(Request.QueryString["role"]))
+            {
+                role = Request.QueryString["role"].ToString();
+            }
+            var model = _manager.GetAllEmployees(crew, role);
+
+            return View(model);
         }
 
         [HttpGet]
@@ -22,84 +34,6 @@ namespace MasterRoster.Controllers
             int employeeId = Convert.ToInt32(Request.QueryString["employeeId"]);
             var employee = _manager.GetEmployeeById(employeeId);
             return View(employee);
-        }
-
-        //
-        // GET: /Employees/Create
-
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        //
-        // POST: /Employees/Create
-
-        [HttpPost]
-        public ActionResult Create(FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        //
-        // GET: /Employees/Edit/5
-
-        public ActionResult Edit(int id)
-        {
-            return View();
-        }
-
-        //
-        // POST: /Employees/Edit/5
-
-        [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
-        }
-
-        //
-        // GET: /Employees/Delete/5
-
-        public ActionResult Delete(int id)
-        {
-            return View();
-        }
-
-        //
-        // POST: /Employees/Delete/5
-
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
-        {
-            try
-            {
-                // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
-            }
-            catch
-            {
-                return View();
-            }
         }
     }
 }
